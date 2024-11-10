@@ -23,7 +23,21 @@ function getMarkerRadius(magnitude) {
 
 const pointToLayer = ({ properties }, latlng) => {
   const radius = getMarkerRadius(properties.mag);
-  return L.circleMarker(latlng, { radius: radius });
+  let color;
+  if (properties.mag < 2.5) {
+    color = "#00ff00";
+  } else if (properties.mag < 4.5) {
+    color = "#8A2BE2";
+  } else if (properties.mag < 6.0) {
+    color = "#ff8000";
+  } else {
+    color = "#ff0000";
+  }
+  return L.circleMarker(latlng, {
+    radius: radius,
+    color: color,
+    fillColor: color,
+  });
 };
 
 const onEachFeature = (feature, layer) => {
@@ -63,12 +77,11 @@ function Map() {
   const [minMag, setMinMag] = useState("2.5");
   const [timespan, setTimespan] = useState("week");
 
-  async function fetchQuakeData(url) {
+  async function fetchQuakeData() {
+    const url = `${BASE_URL}${minMag}_${timespan}.geojson`;
     try {
       const resp = await fetch(url);
-      if (!resp.ok) {
-        throw new Error(`Error fetching data from ${url}`);
-      }
+      if (!resp.ok) throw new Error(`Error fetching data from ${url}`);
       const data = await resp.json();
       setQuakesJson(data.features);
     } catch (error) {
@@ -77,16 +90,18 @@ function Map() {
   }
 
   useEffect(() => {
-    const url = `${BASE_URL}/${minMag}_${timespan}.geojson`;
-    fetchQuakeData(url);
-  }, []);
-
-  // console.log(quakesJson);
+    fetchQuakeData();
+  }, [minMag, timespan]);
 
   return (
     <>
       <CssBaseline />
-      <Header />
+      <Header
+        minMag={minMag}
+        setMinMag={setMinMag}
+        timespan={timespan}
+        setTimespan={setTimespan}
+      />
       <MapContainer
         style={{ height: "100vh" }}
         center={[0, 0]}
@@ -96,13 +111,16 @@ function Map() {
         maxBoundsViscosity={1}
       >
         <LayersControl position="topright">
-          {BASE_LAYERS.map(baseLayer => (
+          {BASE_LAYERS.map((baseLayer) => (
             <LayersControl.BaseLayer
               key={baseLayer.url}
               checked={baseLayer.checked}
               name={baseLayer.name}
             >
-              <TileLayer attribution={baseLayer.attribution} url={baseLayer.url} />
+              <TileLayer
+                attribution={baseLayer.attribution}
+                url={baseLayer.url}
+              />
             </LayersControl.BaseLayer>
           ))}
 
