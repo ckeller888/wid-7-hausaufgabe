@@ -4,7 +4,7 @@
 
 ### 1.Forken
 
-- dieses Repo in das eigene GitHub Konto geforken
+- dieses Repo in das eigene GitHub Konto geforket
 
 <img src="public/image.png" width=200/>
 
@@ -35,6 +35,6 @@ npm install && npm run dev
 - Beachte, dass in `react-leaflet` die `GeoJSON` Komponente von einem _immutable_ `data` Attribut ausgeht (d.h. Änderungen in `data` lösen kein Re-Render in React aus). Ein Re-Render können wir aber z.B. durch das Setzen eines neuen `key` Attributs erzielen (z.B. `<GeoJSON data={...} key={newKey} ...` - siehe Skript)
 - für den Zeitinterval "Past 30 Days" (`month`), können in Kombination mit den Magnitude-Optionen "All" oder "M1.0+" unter Umständed sehr große Daten zusammen kommen. Du könntest für diese Zeitinterval-Option, nur die Magnituden "M2.5+" und größer erlauben. Dies kann man auch in der UI abbilden (z.B. mit `<Button disabled={true}>` kann ein Button deaktiviert werden).
 
-**Screenshot von meiner finalen App**
+## Screenshot von meiner finalen App\*\*
 
 ![](/public/webmap_quakes.png)
